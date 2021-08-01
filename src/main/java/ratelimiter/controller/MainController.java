@@ -12,7 +12,7 @@ public class MainController {
 	static int request = 0;
 
 	@GetMapping(value = URIConstants.CONTROLLER_URI)
-	public ResponseEntity<Object> getDetails() throws Exception {
+	public ResponseEntity<Object> getDetails() {
 		System.out.println("request completed: " + ++request);
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
