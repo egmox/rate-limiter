@@ -17,8 +17,9 @@ public class RequestService {
 		windowStart = Calendar.getInstance();
 		windowStart.add(ConfigConstants.TIME_WINDOW_SIZE, -1);
 		windowStartEpoch = windowStart.getTimeInMillis();
-		cleanIfWindowOld();
-		emptyWindow();
+		updateThrotlling();
+		resetIfWindowOld();
+		discardOldRequests();
 		return checkAndAdd();
 	}
 
@@ -36,16 +37,20 @@ public class RequestService {
 //		return future;
 //	}
 
-	private void cleanIfWindowOld() {
+	private void resetIfWindowOld() {
 		if (requests.size() > 0 && requests.getLast() <= windowStartEpoch) {
 			requests.removeAll(requests);
 		}
 	}
 
-	private void emptyWindow() {
+	private void discardOldRequests() {
 		while (requests.size() > 0 && requests.getFirst() <= windowStartEpoch) {
 			requests.removeFirst();
 		}
+	}
+
+	private void updateThrotlling() {
+		
 	}
 
 	private boolean checkAndAdd() {
@@ -56,8 +61,8 @@ public class RequestService {
 	}
 
 	private Long getRequestLimit() {
-		return ConfigConstants.THROTLLING_ENABLED ? ConfigConstants.REQUEST_LIMIT
-				: ConfigConstants.THROTLLING_REQUEST_LIMIT;
+		return ConfigConstants.THROTLLING_ENABLED ? ConfigConstants.THROTLLING_REQUEST_LIMIT
+				: ConfigConstants.REQUEST_LIMIT;
 	}
 
 }

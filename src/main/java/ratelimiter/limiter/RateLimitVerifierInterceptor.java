@@ -16,8 +16,7 @@ public class RateLimitVerifierInterceptor implements HandlerInterceptor {
 	RequestService requestService;
 
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-			throws Exception {
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 		if (!requestService.addRequest()) {
 			response.setStatus(HttpStatus.TOO_MANY_REQUESTS.value());
 			return false;
