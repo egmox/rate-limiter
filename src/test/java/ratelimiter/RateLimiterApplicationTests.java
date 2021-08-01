@@ -42,10 +42,15 @@ class RateLimiterApplicationTests {
 			request.setRemoteAddr("localhost");
 			return request;
 		};
-		for (int i = 0; i < ConfigConstants.REQUEST_LIMIT; i++) {
+		for (int i = 0; i < getRequestLimit(); i++) {
 			mvc.perform(get("/products").with(postProcessor)).andExpect(status().isOk());
 		}
 		mvc.perform(get("/products")).andExpect(status().is(HttpStatus.TOO_MANY_REQUESTS.value()));
 	}
 
+	private Long getRequestLimit() {
+		return ConfigConstants.HIGH_TIME_ENABLED ? ConfigConstants.HIGH_TIME_REQUEST_LIMIT
+				: ConfigConstants.REQUEST_LIMIT;
+	}
+	
 }

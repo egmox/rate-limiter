@@ -23,20 +23,6 @@ public class RequestService {
 		return checkAndAdd();
 	}
 
-//	public synchronized CompletableFuture<Boolean> addRequest() throws Exception {
-//		windowStart = Calendar.getInstance();
-//		windowStart.add(ConfigConstants.TIME_WINDOW_SIZE, -1);
-//		windowStartEpoch = windowStart.getTimeInMillis();
-//
-//		CompletableFuture<Boolean> future;
-//		future = CompletableFuture.runAsync(() -> cleanIfWindowOld())
-//		.thenRunAsync(() -> emptyWindow())
-//		.;
-//		System.out.println("request queue size: " + requests.size());
-//		System.out.println(future.get());
-//		return future;
-//	}
-
 	private void resetIfWindowOld() {
 		if (requests.size() > 0 && requests.getLast() <= windowStartEpoch) {
 			requests.removeAll(requests);
@@ -50,7 +36,7 @@ public class RequestService {
 	}
 
 	private void updateThrotlling() {
-		
+
 	}
 
 	private boolean checkAndAdd() {
@@ -61,8 +47,17 @@ public class RequestService {
 	}
 
 	private Long getRequestLimit() {
-		return ConfigConstants.THROTLLING_ENABLED ? ConfigConstants.THROTLLING_REQUEST_LIMIT
+//		setHighTime();
+		return ConfigConstants.HIGH_TIME_ENABLED ? ConfigConstants.HIGH_TIME_REQUEST_LIMIT
 				: ConfigConstants.REQUEST_LIMIT;
 	}
+
+//	private void setHighTime() {
+//		if (Calendar.HOUR_OF_DAY >= ConfigConstants.HIGH_TIME_START
+//				&& Calendar.HOUR_OF_DAY <= ConfigConstants.HIGH_TIME_END) {
+//			ConfigConstants.HIGH_TIME_ENABLED = true;
+//		}
+//		ConfigConstants.HIGH_TIME_ENABLED = false;
+//	}
 
 }
