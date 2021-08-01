@@ -18,12 +18,15 @@ import org.springframework.test.web.servlet.request.RequestPostProcessor;
 import org.springframework.web.context.WebApplicationContext;
 
 import ratelimiter.configuration.ConfigConstants;
+import ratelimiter.configuration.URIConstants;
 
 @SpringBootTest
 @WebAppConfiguration
 @AutoConfigureMockMvc
 @RunWith(SpringRunner.class)
 class RateLimiterApplicationTests {
+
+	private RequestPostProcessor postProcessor;
 
 	@Autowired
 	private MockMvc mvc;
@@ -37,20 +40,15 @@ class RateLimiterApplicationTests {
 	}
 
 	@Test
-	void loadTesting() throws Exception {
-		RequestPostProcessor postProcessor = request -> {
-			request.setRemoteAddr("localhost");
+	void loadTestingRequestLimit() throws Exception {
+		postProcessor = request -> {
+			request.setRemoteAddr(URIConstants.HOST);
 			return request;
 		};
-		for (int i = 0; i < getRequestLimit(); i++) {
-			mvc.perform(get("/products").with(postProcessor)).andExpect(status().isOk());
+		for (int i = 0; i < ConfigConstants.REQUEST_LIMIT; i++) {
+			mvc.perform(get(URIConstants.CONTROLLER_URI).with(postProcessor)).andExpect(status().isOk());
 		}
-		mvc.perform(get("/products")).andExpect(status().is(HttpStatus.TOO_MANY_REQUESTS.value()));
+		mvc.perform(get(URIConstants.CONTROLLER_URI)).andExpect(status().is(HttpStatus.TOO_MANY_REQUESTS.value()));
 	}
 
-	private Long getRequestLimit() {
-		return ConfigConstants.HIGH_TIME_ENABLED ? ConfigConstants.HIGH_TIME_REQUEST_LIMIT
-				: ConfigConstants.REQUEST_LIMIT;
-	}
-	
 }
